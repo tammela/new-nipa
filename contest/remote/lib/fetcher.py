@@ -143,8 +143,10 @@ class Fetcher:
                        cwd=self._tree_path, shell=True, check=True)
 
         if self._patches_path is not None:
-            subprocess.run('git apply --check -v {}/*'.format(self._patches_path),
-                           cwd=self._tree_path, shell=True)
+            for patch in os.listdir(self._patches_path):
+                realpath = '{}/{}'.format(self._patches_path, patch)
+                subprocess.run('git apply -v {}'.format(realpath),
+                               cwd=self._tree_path, shell=True)
 
         self._clean_old_branches(branches, to_test["branch"])
         self._run_test(to_test)
